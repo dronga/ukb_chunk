@@ -1,0 +1,23 @@
+#!/bin/bash
+#$ -cwd -V
+#$ -j y
+#$ -P lindgren.prjc -q long.qc
+#$ -t 1-22
+
+echo "*********************ap***************************************"
+echo "SGE job ID: "$JOB_ID
+echo "SGE task ID: "$SGE_TASK_ID
+echo "Run on host: "`hostname`
+echo "Operating system: "`uname -s`
+echo "Username: "`whoami`
+echo "Started at: "`date`
+echo "************************************************************"
+
+#CHANGE THESE
+INPUTDIR=/well/lindgren/UKBIOBANK/GENOS_5122
+OUTPUTDIR=/well/lindgren/UKBIOBANK/GEN_FORMAT
+
+
+
+i=$SGE_TASK_ID
+/apps/well/qctool/1.5/qctool -g $INPUTDIR/chr${i}impv1.bgen -s $INPUTDIR/impv1.sample  -maf 0.005 1 -info 0.4 1 -og $OUTPUTDIR/chr${i}impv1.qc.MAF0005.INFO04.nochr.prjc.gen.gz -os $OUTPUTDIR/chr${i}impv1.qc.MAF0005.INFO04.sample -omit-chromosome

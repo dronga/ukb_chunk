@@ -1,0 +1,41 @@
+#!/bin/bash -v
+#$ -cwd -V
+#$ -j y
+#$ -P drong.prjc -q short.qc
+#$ -t 1-2245
+##(limit on jobs) -tc 150
+
+echo "************************************************************"
+echo "snptest_submit.sh, written by Alexander Drong 26/02/16"
+echo "SGE job ID: "$JOB_ID
+echo "SGE task ID: "$SGE_TASK_ID
+echo "Run on host: "`hostname`
+echo "Operating system: "`uname -s`
+echo "Username: "`whoami`
+echo "Started at: "`date`
+echo "************************************************************"
+
+i=$SGE_TASK_ID
+
+FILEPATH=( $(sed -n "${i}p" /well/lindgren/UKBIOBANK/GEN_FORMAT/splitfiles_all.txt) )
+echo $FILEPATH
+
+UFILE=${FILEPATH##*/}
+
+
+echo $i
+
+for STRAT in WOMEN MEN ALL
+do
+for PHE in res_whr_inv #res_bmi_inv res_whrAdjBMI_inv
+do
+/apps/well/snptest/2.5.1/snptest_v2.5.1 \
+-data $FILEPATH  /well/lindgren/UKBIOBANK/GIANT-SNPTEST/PHENO/STRAT_${STRAT}.sample \
+-o /well/lindgren/UKBIOBANK/GIANT-SNPTEST/RESULTS/SNPTEST_EXPECTED_${STRAT}_${PHE}_${UFILE} \
+-method expected \
+-frequentist 1 \
+-pheno $PHE  \
+-use_raw_phenotypes 
+done
+done
+
